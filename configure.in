@@ -1,0 +1,70 @@
+# Simple configuration script for tasque evolution plugin by Johnny Jacob <jjohnny@novell.com>
+
+AC_PREREQ(2.57)
+AC_INIT(eplugin-tasque, 0.1, [jjohnny@novell.com])
+AC_CONFIG_SRCDIR(README)
+
+AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
+
+AC_CONFIG_HEADER([config.h])
+AC_DEFINE(_GNU_SOURCE, 1, [Use GNU extensions])
+AC_PROG_CC
+
+AC_PROG_INTLTOOL([0.35.5])
+
+dnl I18N stuff
+AM_GLIB_GNU_GETTEXT
+
+GETTEXT_PACKAGE=evolution-mapi-provider
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Package name for gettext])
+
+localedir='$(prefix)/$(DATADIRNAME)/locale'
+AC_SUBST(localedir)
+
+dnl Initialize libtool
+AM_PROG_LIBTOOL
+
+PKG_PROG_PKG_CONFIG
+
+dnl ****************************
+dnl Check for evolution plugins 
+dnl ****************************
+
+AC_ARG_WITH(evolution, [  --evolution=[version] Use Evolution version.],
+			evolution_version="$withval", evolution_version="2.22")	
+
+PKG_CHECK_MODULES(EVOLUTION_DATA_SERVER, evolution-data-server-${evolution_camel_version})
+PKG_CHECK_MODULES(EVOLUTION_PLUGIN, evolution-plugin)
+
+GETTEXT_PACKAGE=evolution
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [Package Name for Gettext])
+
+dnl Add evolution plugin rules here
+EVO_PLUGIN_RULE=$srcdir/eplugin-rule.mk
+AC_SUBST_FILE(EVO_PLUGIN_RULE)
+
+EVOLUTION_PLUGIN="evolution-plugin"
+AC_SUBST(EVOLUTION_PLUGIN)
+
+EVOLUTION_PLUGIN_INSTALL="evolution-plugin-install"
+AC_SUBST(EVOLUTION_PLUGIN_INSTALL)
+
+EVOLUTION_PLUGIN_UNINSTALL="evolution-plugin-uninstall"
+AC_SUBST(EVOLUTION_PLUGIN_UNINSTALL)
+
+plugindir=`$PKG_CONFIG --variable=plugindir evolution-plugin`
+AC_SUBST(plugindir)
+
+dnl ***********************
+dnl Makefiles 
+dnl ***********************
+
+AC_CONFIG_FILES([Makefile 
+src/Makefile
+po/Makefile.in
+])
+AC_OUTPUT
+
+
