@@ -6,7 +6,17 @@ INCLUDES += 	-DDBUS_API_SUBJECT_TO_CHANGE=1		\
 		-DDBUS_VERSION=$(DBUS_VERSION)          \
 		$(NMN_CFLAGS)
 
-@EVO_PLUGIN_RULE@
+%.eplug: %.eplug.in
+	sed -e 's|\@PLUGINDIR\@|$(plugindir)|'		\
+	-e 's|\@SOEXT\@|$(SOEXT)|'			\
+	-e 's|\@GETTEXT_PACKAGE\@|$(GETTEXT_PACKAGE)|'	\
+	-e 's|\@LOCALEDIR\@|$(localedir)|' $< > $@
+
+%.eplug.in: %.eplug.xml
+	LC_ALL=C $(INTLTOOL_MERGE) -x -u /tmp $< $@
+
+%.error: %.error.xml
+	LC_ALL=C $(INTLTOOL_MERGE) -x -u /tmp $< $@
 
 plugin_DATA = org-gnome-evolution-tasque.eplug
 plugin_LTLIBRARIES = liborg-gnome-evolution-tasque.la

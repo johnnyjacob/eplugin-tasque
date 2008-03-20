@@ -34,7 +34,6 @@ dnl ****************************
 AC_ARG_WITH(evolution, [  --evolution=[version] Use Evolution version.],
 			evolution_version="$withval", evolution_version="2.22")	
 
-PKG_CHECK_MODULES(EVOLUTION_DATA_SERVER, evolution-data-server-${evolution_camel_version})
 PKG_CHECK_MODULES(EVOLUTION_PLUGIN, evolution-plugin)
 
 GETTEXT_PACKAGE=evolution
